@@ -16,6 +16,7 @@ connection.query(sqlCreate)
 app.get('/', (req,res) => {
     createRow()
     getRows(rows =>  {
+        res.writeHead(200, {'Content-Type': 'text/html'});
         res.write('<h1>Full Cycle Rocks!</h1>')
         
         let names = ""
