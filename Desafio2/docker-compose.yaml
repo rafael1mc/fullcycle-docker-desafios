@@ -1,0 +1,34 @@
+version: '3'
+
+services: 
+
+  nginx:
+    build:
+      context: nginx
+    container_name: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - node-server
+
+  node-server:
+    build: 
+      context: node
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
+    container_name: node-server
+    ports: 
+      - "3000:3000"
+    depends_on: 
+       - db
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes: 
+      - ./mysql:/var/lib/mysql
+    environment: 
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
